@@ -7,6 +7,18 @@ use Auth;
 
 class SessionsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth', [
+            'except' => ['show', 'create', 'store']
+        ]);
+
+        $this->middleware('guest', [
+            'only' => ['create']
+        ]);
+    }
+
+
     //显示登录页面
     public function create()
     {
@@ -20,12 +32,12 @@ class SessionsController extends Controller
             'email'    => 'required|email|max:255',
             'password' => 'required'
         ]);
+
         if (Auth::attempt($credentials, $request->has('remember'))) {
-            // 登录成功后的相关操作
             session()->flash('success', '欢迎回来！');
-            return redirect()->route('users.show', [Auth::user()]);
+            $fallback = route('users.show', Auth::user());
+            return redirect()->intended($fallback);
         } else {
-            // 登录失败后的相关操作
             session()->flash('danger', '很抱歉，您的邮箱和密码不匹配');
             return redirect()->back()->withInput();
         }
