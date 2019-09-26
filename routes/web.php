@@ -12,6 +12,9 @@
 */
 
 //主页
+// use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Route;
+
 Route::get('/', 'StaticPagesController@home')->name('home');
 //帮助
 Route::get('/help', 'StaticPagesController@help')->name('help');
@@ -22,3 +25,10 @@ Route::get('/about', 'StaticPagesController@about')->name('about');
 Route::get('signup', 'UsersController@create')->name('signup');
 
 Route::resource('users', 'UsersController');
+
+//显示登录页面
+Route::get('login', 'SessionsController@create')->name('login');
+//创建新会话（登录）
+Route::post('login', 'SessionsController@store')->name('login');
+//销毁会话（退出登录）
+Route::delete('logout', 'SessionsController@destroy')->name('logout');
